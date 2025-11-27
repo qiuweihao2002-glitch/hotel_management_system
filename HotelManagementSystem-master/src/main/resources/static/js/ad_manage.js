@@ -10,6 +10,11 @@ $(document).ready(function(){
 	$("#next").on('click',function(){
 		getNext();
 	});
+    $("#addUserBtn").on('click', function(event){
+        event.preventDefault();   // 阻止表单提交
+        event.stopPropagation();  // 阻止事件冒泡
+        addUser();
+    });
 
 })
 
@@ -20,6 +25,13 @@ function isEmptyObject(e) {
 		return 0;
 	return 1;
 }
+// 判断字符串是否为空 空返回1 非空返回0
+function isEmptyString(str){
+    if(str=='null' || str=='')
+        return 1;
+    return 0;
+}
+
 
 
 
@@ -90,6 +102,39 @@ function getStaffList(){
 		}
 	})
 }
+
+function addUser(){
+    if(isEmptyString($("#inputAccount").val()) || isEmptyString($("#inputPwd").val()))
+        alert("请填写全内容");
+    else{
+        $.ajax({
+            type:"POST",
+            url:"../user/adminAddUser.do",   // ★ 调用新的后台接口
+            dataType:"JSON",
+            data:{
+                "useraccount": $("#inputAccount").val(),
+                "password": $("#inputPwd").val(),
+                "power": $("#inputPower").val()    //根据用户选择传入
+            },
+            success:function(data){
+                if(data.code==0){
+                    alert("添加成功");
+                    $('#addUser').modal('toggle');
+                    $("#inputAccount").val("");
+                    $("#inputPwd").val("");
+                    getStaffList();      // 重新刷新管理员的员工列表
+                }
+                else {
+                    alert("添加失败：" + (data.message || ""));
+                }
+            },
+            error:function(){
+                alert("添加用户出现错误");
+            }
+        })
+    }
+}
+
 
 function btnOn(){
 	$("input").filter("#setStaff").on('click',function(event){

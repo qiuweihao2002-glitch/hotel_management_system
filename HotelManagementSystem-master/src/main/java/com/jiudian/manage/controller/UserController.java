@@ -154,6 +154,67 @@ public class UserController {
 //        }
 //        return signal.getResult();
 
+
+
+
+    @RequestMapping(value = "/adminAddUser.do")
+    public Map adminAddUser(@RequestParam String useraccount,
+                            @RequestParam String password,
+                            @RequestParam String power,
+                            HttpSession session) {
+
+        StateSignal signal = new StateSignal();
+
+        // 1. 校验是否登录
+        User currentUser = (User) session.getAttribute("loginUser");
+        if (currentUser == null) {
+            signal.put(State.ErrorCode);
+            signal.put("message", "未登录或登录已失效");
+            return signal.getResult();
+        }
+
+        // 2. 只允许管理员新增账号（假设 power=0 是管理员）
+        if (currentUser.getPower() != 0) {
+            signal.put(State.ErrorCode);
+            signal.put("message", "只有管理员可以新增系统账号");
+            return signal.getResult();
+        }
+
+        // 3. 检查账号是否已存在，不能重复
+        User exist = userService.getUserByAccount(useraccount);
+        if (exist != null) {
+            signal.put(State.ErrorCode);
+            signal.put("message", "账号已存在，不能重复创建");
+            return signal.getResult();
+        }
+
+        // 4. 解析要创建的角色（管理员这边你可以先固定为 2=员工，也可以前端传）
+        int targetPower = Integer.parseInt(power);
+
+        // 再保护一下：不能创建比自己更高权限的账号
+        if (targetPower < currentUser.getPower()) {
+            signal.put(State.ErrorCode);
+            signal.put("message", "不能创建比自己权限更高的账号");
+            return signal.getResult();
+        }
+
+        // 5. 真正插入新用户（用你现成的 addUser）
+        boolean ok = userService.addUser(useraccount, password, targetPower);//返回插入是否成功
+
+        if (ok) {
+            signal.put(State.SuccessCode);
+            signal.put(State.SuccessMessage);
+            signal.put("message", "账号创建成功");
+        } else {
+            signal.put(State.ErrorCode);
+            signal.put(State.ErrorMessage);
+            signal.put("message", "账号创建失败");
+        }
+
+        return signal.getResult();
+    }
+
+
     /**
      * 修改用户数据(已测试)
      * @param userid
