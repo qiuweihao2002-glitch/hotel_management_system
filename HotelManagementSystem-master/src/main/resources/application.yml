@@ -1,0 +1,57 @@
+#设置端口号
+server:
+  port: 80
+  tomcat:
+    uri-encoding: UTF-8
+#设置访问路径
+context-path: /
+spring:
+    datasource:
+        name: mysql
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+          filters: stat
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/jiudianmanage?useSSL=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+          username: root
+          password: root
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://127.0.0.1:3306/jiudianmanage?useSSL=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+#          username: root
+#          password: jiaoYAN585269..
+          initial-size: 1
+          min-idle: 1
+          max-active: 20
+          max-wait: 60000
+          time-between-eviction-runs-millis: 60000
+          min-evictable-idle-time-millis: 300000
+          validation-query: SELECT 1
+          test-while-idle: true
+          test-on-borrow: false
+          test-on-return: false
+          pool-prepared-statements: false
+          max-pool-prepared-statement-per-connection-size: 20
+    thymeleaf:
+      cache: false
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/
+    http:
+      encoding:
+        charset: UTF-8
+        force: true
+        enabled: true
+
+#配置mybatis的mapper路径和实体类路径
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.jiudian.manage.model
+  #可以开启驼峰映射，这样即使数据库中的属性名与java实体类中成员变量的名字大小写不一致，也可以对应赋值（可以在xml中少写一个）
+  configuration:
+    map-underscore-to-camel-case: true
+#pagehelper分页
+pagehelper:
+    helperDialect: mysql
+    reasonable: false
+    supportMethodsArguments: true
+    params: count=countSql
+    returnPageInfo: check

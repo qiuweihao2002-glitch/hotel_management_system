@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiudian.manage.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.jiudian.manage.model.User">
+        <id column="userid" jdbcType="INTEGER" property="userid" />
+        <result column="useraccount" jdbcType="VARCHAR" property="useraccount" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="age" jdbcType="INTEGER" property="age" />
+        <result column="power" jdbcType="INTEGER" property="power" />
+        <result column="IDnumber" jdbcType="VARCHAR" property="idnumber" />
+        <result column="money" jdbcType="DOUBLE" property="money" />
+        <result column="photoUrl" jdbcType="VARCHAR" property="photourl" />
+        <result column="phonenumber" jdbcType="VARCHAR" property="phonenumber" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        userid, useraccount, password, username, age, power, IDnumber, money, photoUrl, phonenumber
+    </sql>
+
+    <select id="getAllUser" resultMap="BaseResultMap"  >
+        select
+        <include refid="Base_Column_List" />
+        from user
+    </select>
+
+    <select id="selectByPower" resultMap="BaseResultMap"  parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where power = #{power,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByAccount" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where useraccount = #{useraccount,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where userid = #{userid,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user
+        where userid = #{userid,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 修改点 1: 完善 insert 方法 -->
+    <insert id="insert" parameterType="com.jiudian.manage.model.User"
+            useGeneratedKeys="true"
+            keyProperty="userid">
+        insert into user (useraccount, password,
+                          username, age, power,
+                          IDnumber, money, photoUrl,
+                          phonenumber)
+        values (#{useraccount,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+                #{username,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{power,jdbcType=INTEGER},
+                #{idnumber,jdbcType=VARCHAR}, #{money,jdbcType=DOUBLE}, #{photourl,jdbcType=VARCHAR},
+                #{phonenumber,jdbcType=VARCHAR})
+    </insert> <!-- 占位符#{xxx}， 把User对象中属性的值赋值到上面这些占位符中    或者将函数形参中传来的实参的值赋给这个占位符中写的变量（注意用@Param）-->
+
+
+
+
+
+
+    <!-- 修改点 2: 完善 insertSelective 方法 -->
+    <insert id="insertSelective" parameterType="com.jiudian.manage.model.User"
+            useGeneratedKeys="true"
+            keyProperty="userid">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <!-- 移除了 userid 的判断 -->
+            <if test="useraccount != null">
+                useraccount,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="power != null">
+                power,
+            </if>
+            <if test="idnumber != null">
+                IDnumber,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="photourl != null">
+                photoUrl,
+            </if>
+            <if test="phonenumber != null">
+                phonenumber,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <!-- 移除了 userid 的判断 -->
+            <if test="useraccount != null">
+                #{useraccount,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="power != null">
+                #{power,jdbcType=INTEGER},
+            </if>
+            <if test="idnumber != null">
+                #{idnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="money != null">
+                #{money,jdbcType=DOUBLE},
+            </if>
+            <if test="photourl != null">
+                #{photourl,jdbcType=VARCHAR},
+            </if>
+            <if test="phonenumber != null">
+                #{phonenumber,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.jiudian.manage.model.User">
+        update user
+        <set>
+            <if test="useraccount != null">
+                useraccount = #{useraccount,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="power != null">
+                power = #{power,jdbcType=INTEGER},
+            </if>
+            <if test="idnumber != null">
+                IDnumber = #{idnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=DOUBLE},
+            </if>
+            <if test="photourl != null">
+                photoUrl = #{photourl,jdbcType=VARCHAR},
+            </if>
+            <if test="phonenumber != null">
+                phonenumber = #{phonenumber,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where userid = #{userid,jdbcType=INTEGER}
+    </update>
+
+
+
+    <update id="updateByPrimaryKey" parameterType="com.jiudian.manage.model.User">
+        update user
+        set useraccount = #{useraccount,jdbcType=VARCHAR},
+            password = #{password,jdbcType=VARCHAR},
+            username = #{username,jdbcType=VARCHAR},
+            age = #{age,jdbcType=INTEGER},
+            power = #{power,jdbcType=INTEGER},
+            IDnumber = #{idnumber,jdbcType=VARCHAR},
+            money = #{money,jdbcType=DOUBLE},
+            photoUrl = #{photourl,jdbcType=VARCHAR},
+            phonenumber = #{phonenumber,jdbcType=VARCHAR}
+        where userid = #{userid,jdbcType=INTEGER}
+    </update>
+
+</mapper>
