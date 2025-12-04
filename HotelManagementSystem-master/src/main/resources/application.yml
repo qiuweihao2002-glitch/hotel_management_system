@@ -1,6 +1,6 @@
 #设置端口号
 server:
-  port: 80
+  port: 8080
   tomcat:
     uri-encoding: UTF-8
 #设置访问路径
@@ -12,9 +12,10 @@ spring:
         druid:
           filters: stat
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/jiudianmanage?useSSL=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+          url: jdbc:mysql://localhost:3307/jiudianmanage?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+          #jdbc:mysql://${DB_HOST:mysql_hotel}:${DB_PORT:3306}/jiudianmanage?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
           username: root
-          password: root
+          password: 123456
 #          driver-class-name: com.mysql.jdbc.Driver
 #          url: jdbc:mysql://127.0.0.1:3306/jiudianmanage?useSSL=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
 #          username: root
@@ -41,6 +42,16 @@ spring:
         force: true
         enabled: true
 
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      # 如果以后给 Redis 配密码，可以加：
+      # password: ${REDIS_PASSWORD:}
+
+    session:
+      store-type: redis   # 告诉 Spring 用 redis 存 Session
+      timeout: 30m        # 会话超时时间
+
 #配置mybatis的mapper路径和实体类路径
 mybatis:
   mapper-locations: classpath:mappers/*.xml
@@ -55,3 +66,6 @@ pagehelper:
     supportMethodsArguments: true
     params: count=countSql
     returnPageInfo: check
+
+
+

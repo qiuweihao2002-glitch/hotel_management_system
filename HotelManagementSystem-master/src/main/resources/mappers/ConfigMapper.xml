@@ -139,4 +139,12 @@
       totalroom = #{totalroom,jdbcType=DOUBLE}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+    <update id="increaseStat">
+        UPDATE config
+        SET totalroom = totalroom + #{roomDelta},
+            totalmoney = totalmoney + #{moneyDelta}
+        WHERE id = #{id}
+    </update>
 </mapper>

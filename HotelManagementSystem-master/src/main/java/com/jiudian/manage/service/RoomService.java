@@ -56,4 +56,7 @@ public interface RoomService {
     public Room getRoomById(int roomid);
 
 
+
+    public void clearRoomListCache();
+
 }
