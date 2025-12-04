@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  mysql_hotel:
+    image: mysql:8.0
+    container_name: mysql_hotel
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: jiudianmanage
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hotel-net
+
+  myredis:
+    image: redis:7
+    container_name: myredis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - "D:/docker-data/redis:/data"     # ← 修正点：使用你的真实路径，不用 volume
+    networks:
+      - hotel-net
+
+  hotel_app_1:
+    image: hotel-manage:v3
+    container_name: hotel_app_1
+    restart: always
+    depends_on:
+      - mysql_hotel
+      - myredis
+    environment:
+      DB_HOST: mysql_hotel
+      DB_PORT: 3306
+      REDIS_HOST: myredis
+      REDIS_PORT: 6379
+    ports:
+      - "8081:80"
+    volumes:
+      - "D:/hotel_upload:/app/upload"
+    networks:
+      - hotel-net
+
+  hotel_app_2:
+    image: hotel-manage:v3
+    container_name: hotel_app_2
+    restart: always
+    depends_on:
+      - mysql_hotel
+      - myredis
+    environment:
+      DB_HOST: mysql_hotel
+      DB_PORT: 3306
+      REDIS_HOST: myredis
+      REDIS_PORT: 6379
+    ports:
+      - "8082:80"
+    volumes:
+      - "D:/hotel_upload:/app/upload"
+    networks:
+      - hotel-net
+
+  nginx_hotel:
+    image: nginx:1.27
+    container_name: nginx_hotel
+    restart: always
+    depends_on:
+      - hotel_app_1
+      - hotel_app_2
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+    networks:
+      - hotel-net
+
+volumes:
+  mysql_data:
+
+networks:
+  hotel-net:
+    driver: bridge

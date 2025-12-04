@@ -5,7 +5,6 @@ import com.jiudian.manage.service.impl.UserServiceImpl;
 import com.jiudian.manage.until.ImageCode;
 import com.jiudian.manage.until.State;
 import com.jiudian.manage.until.StateSignal;
-import com.sun.glass.ui.Accessible;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,35 +30,57 @@ public class UserController {
      * @param password
      * @return
      */
+//    @RequestMapping(value = "/login.do")
+//    public Map login(@RequestParam String useraccount, @RequestParam String password,@RequestParam String icode,HttpSession session){
+//        StateSignal signal = new StateSignal();
+//        String code = (String) session.getAttribute(ImageCode.CODENAME);
+//        System.out.println("session: "+code+"   实际"+icode);
+//        if(icode!=null&&code!=null&&icode.equals(code)){
+//            int[] login = userService.login(useraccount, password);
+//            if(login!=null){
+//                //会生成类似JSON格式的响应
+//                signal.put(State.SuccessCode);
+//                signal.put(State.SuccessMessage);
+//                signal.put("userid",login[0]);
+//                signal.put("power",login[1]);//同时传入账户信息和权限
+//                User user = userService.current_login_user(useraccount, password);
+//                session.setAttribute("loginUser", user);
+//                System.out.println("登录成功，sessionID = " + session.getId());
+//
+//            }else {
+//                signal.put(State.ErrorCode);
+//                signal.put(State.ErrorMessage);
+//
+//
+//            }
+//        }else{
+//            signal.put(State.ErrorCode);
+//            signal.put("message","验证码输入错误");
+//        }
+//        return signal.getResult();//返回整个HashMap对象，@RestController 自动将 Map 序列化为JSON格式返回给前端
+//    }
+//去掉验证码的登录方便测试
     @RequestMapping(value = "/login.do")
-    public Map login(@RequestParam String useraccount, @RequestParam String password,@RequestParam String icode,HttpSession session){
+    public Map login(@RequestParam String useraccount, @RequestParam String password,HttpSession session){
         StateSignal signal = new StateSignal();
-        String code = (String) session.getAttribute(ImageCode.CODENAME);
-        System.out.println("session: "+code+"   实际"+icode);
-        if(icode!=null&&code!=null&&icode.equals(code)){
-            int[] login = userService.login(useraccount, password);
-            if(login!=null){
-                //会生成类似JSON格式的响应
-                signal.put(State.SuccessCode);
-                signal.put(State.SuccessMessage);
-                signal.put("userid",login[0]);
-                signal.put("power",login[1]);//同时传入账户信息和权限
-                User user = userService.current_login_user(useraccount, password);
-                session.setAttribute("loginUser", user);
-                System.out.println("登录成功，sessionID = " + session.getId());
-
+        int[] login = userService.login(useraccount, password);
+        if(login!=null){
+            //会生成类似JSON格式的响应
+            signal.put(State.SuccessCode);
+            signal.put(State.SuccessMessage);
+            signal.put("userid",login[0]);
+            signal.put("power",login[1]);//同时传入账户信息和权限
+            User user = userService.current_login_user(useraccount, password);
+            session.setAttribute("loginUser", user);
+            System.out.println("登录成功，sessionID = " + session.getId());
             }else {
                 signal.put(State.ErrorCode);
                 signal.put(State.ErrorMessage);
 
-
             }
-        }else{
-            signal.put(State.ErrorCode);
-            signal.put("message","验证码输入错误");
-        }
         return signal.getResult();//返回整个HashMap对象，@RestController 自动将 Map 序列化为JSON格式返回给前端
     }
+
 
     @GetMapping("/createImage")
     public void createImage(@RequestParam String code, HttpServletResponse response, HttpSession session) throws IOException {
@@ -309,12 +330,12 @@ public class UserController {
      */
     @RequestMapping(value = "/getUserById.do")
     public Map getUserById(@RequestParam int userid){
-        User user = userService.selectUser(userid);
+        User user = userService.selectUser(userid);//根据userid查询用户,并返回整个user
         StateSignal signal = new StateSignal();
         if(user!=null){
             signal.put(State.SuccessCode);
             signal.put(State.SuccessMessage);
-            signal.put("user",user);
+            signal.put("user",user);//看到没，他把user也返回给前端了
         }else {
             signal.put(State.ErrorCode);
             signal.put(State.ErrorMessage);

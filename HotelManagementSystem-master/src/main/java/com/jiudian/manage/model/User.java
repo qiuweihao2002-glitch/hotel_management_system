@@ -1,6 +1,12 @@
 package com.jiudian.manage.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    // 建议加一个序列化ID，防止以后改字段导致警告
+    private static final long serialVersionUID = 1L;
+
     private Integer userid;
 
     private String useraccount;
