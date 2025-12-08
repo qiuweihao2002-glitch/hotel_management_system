@@ -19,6 +19,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableScheduling
 public class ManageApplication  extends SpringBootServletInitializer {
 
+
     public static void main(String[] args) {
         SpringApplication.run(ManageApplication.class, args);
     }
